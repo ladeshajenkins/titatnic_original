@@ -1,0 +1,18 @@
+library(dplyr)
+library(tidyr)
+org_df = read.csv("titanic_original.csv")
+df <- tbl_df(org_df)
+df <- df %>% 
+  mutate(embarked = gsub("^$", "S", embarked))
+df %>% select(embarked) %>% unique()
+df <- df %>% 
+  mutate(age = if_else(is.na(age), mean(df$age, na.rm=TRUE), age))
+df %>% select(age) %>% unique()
+df <- df %>% 
+  mutate(boat = gsub("^$", "NA", boat))
+  df %>% select(boat) %>% unique()
+  df <- df %>% 
+  mutate(as_cabin_number = if_else(grepl("^$", cabin), 0, 1))
+df %>% 
+  select(as_cabin_number) %>% distinct
+  write.csv(df, file = "titanic_clean.csv")
